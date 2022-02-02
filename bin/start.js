@@ -1,0 +1,122 @@
+#!/usr/bin/env node
+
+const fs = require("fs-extra");
+const path = require("path");
+const https = require("https");
+const { exec } = require("child_process");
+
+const packageJson = require("../package.json");
+
+const scripts = `"start": "react-scripts start",
+"build": "react-scripts build", 
+"test": "react-scripts test",
+"eject": "react-scripts eject"`;
+
+const babel = `"babel": ${JSON.stringify(packageJson.babel)}`;
+
+const gitIgnore = `https://gist.githubusercontent.com/abrahym-sharfeldden/d954a5b16df0984617662f0ce38312cf/raw/50288c5167eacbe6d92789c8b9a76d01eb8c7407/.gitignore`;
+
+const getDeps = (deps) => {
+    if(!deps) 
+        return {};
+    
+    return Object.entries(deps)
+    .map((dep) => `${dep[0]}@${dep[1]}`)
+    .toString()
+    .replace(/,/g, " ")
+    .replace(/^/g, "")
+    // exclude the dependency only used in this file, nor relevant to the boilerplate
+    .replace(/fs-extra[^\s]+/g, "");
+}
+
+
+console.log("Initializing project..");
+
+// create folder and initialize npm
+exec(
+  `mkdir -p ${process.argv[2]} && cd ${process.argv[2]} && npm init -f`,
+  (initErr, initStdout, initStderr) => {
+    if (initErr) {
+      console.error(`Everything was fine, then it wasn't:
+    ${initErr}`);
+      return;
+    }
+    const packageJSON = `${process.argv[2]}/package.json`;
+    // replace the default scripts
+    fs.readFile(packageJSON, (err, file) => {
+      if (err) throw err;
+      const data = file
+        .toString()
+        .replace(
+          '"test": "echo \\"Error: no test specified\\" && exit 1"',
+          scripts
+        )
+        .replace('"keywords": []', babel);
+      fs.writeFile(packageJSON, data, (err2) => err2 || true);
+    });
+     // npm will remove the .gitignore file when the package is installed, 
+     // therefore it cannot be copied, locally and needs to be downloaded. 
+     // Use your raw .gitignore once you pushed your code to GitHub.
+     https.get(
+        gitIgnore,
+        (res) => {
+          res.setEncoding("utf8");
+          let body = "";
+          res.on("data", (data) => {
+            body += data;
+          });
+          res.on("end", () => {
+            fs.writeFile(
+              `${process.argv[2]}/.gitignore`,
+              body,
+              { encoding: "utf-8" },
+              (err) => {
+                if (err) throw err;
+              }
+            );
+          });
+        }
+      );
+  
+      console.log("npm init -- done\n");
+  
+      // installing dependencies
+      console.log("Installing deps -- it might take a few minutes..");
+      const devDeps = getDeps(packageJson.devDependencies);
+      const deps = getDeps(packageJson.dependencies);
+
+      let err = false;
+      let initArr = [];
+      initArr[0] = `cd ${process.argv[2]}`;
+      initArr[1] = `git init `;
+      initArr[2] = `node -v `;
+      initArr[3] = `npm -v `;
+      initArr[4] = Object.keys(devDeps).length ? `npm i -D ${devDeps} ` : ` `;
+      initArr[5] = `npm i -S ${deps}`;
+      
+      initArr.forEach(value => {
+          exec(
+              value,
+              (error, stdout, stderr) => {
+                  if(error) {
+                      err = true;
+                      console.error(`The following error happened when running ${value}: ${error}`);
+                      return;
+                  }
+                  console.log(stdout);
+              }
+          )
+      });
+      if(!err){
+        console.log("Copying additional files..");
+        // copy additional source files
+        fs.copy(path.join(__dirname, "../src"), `${process.argv[2]}/src`)
+          .then(() =>
+            console.log(
+              `All done!\n\nYour project is now ready\n\nUse the below command to run the app.\n\ncd ${process.argv[2]}\nnpm start`
+            )
+          )
+          .catch((err) => console.error(err));
+      }
+    }
+  );
