@@ -5,13 +5,14 @@
  ? Thirdly,
  TODO: Fourthly
  */
-const fs = require("fs-extra");
+const fs = require("fs");
+const util = require("util");
 const path = require("path");
-const https = require("https");
-const { exec } = require("child_process");
+const exec = util.promisify(require("child_process").exec);
 const packageJson = require("../package.json");
 
-const scripts = `"start": "react-scripts start",\n"build": "react-scripts build", \n"test": "react-scripts test",\n"eject": "react-scripts eject"`;
+// const https = require("https");
+// const scripts = `"start": "react-scripts start",\n"build": "react-scripts build", \n"test": "react-scripts test",\n"eject": "react-scripts eject"`;
 const babel = `"babel": ${JSON.stringify(packageJson.babel)}`;
 const gitIgnore = `https://gist.githubusercontent.com/abrahym-sharfeldden/d954a5b16df0984617662f0ce38312cf/raw/50288c5167eacbe6d92789c8b9a76d01eb8c7407/.gitignore`;
 
@@ -96,7 +97,7 @@ const createPackageJSON = (packageJson, projectName) => {
 	console.log("Initializing project..");
 	try {
 		console.log(logColor1, "Downloading the boilerplate from Github...", logDefault);
-		await executeCommand(`git clone --depth 1 ${git_repo} ${projectPath}`);
+		await executeCommand(`git clone --depth 1 ${git_repo} ${projectPath}`).then((res) => console.log(res));
 
 		process.chdir(projectPath);
 		console.log(logColor1, "Installing dependencies...", logDefault);
