@@ -51,7 +51,9 @@ try {
 
 const executeCommand = async (command) => {
 	try {
-		await exec(command);
+		const { stdout, stderr } = await exec(command);
+		console.log(stdout);
+		console.log(stderr);
 	} catch (error) {
 		console.log(logError, error, logDefault);
 	}
@@ -97,7 +99,7 @@ const createPackageJSON = (packageJson, projectName) => {
 	console.log("Initializing project..");
 	try {
 		console.log(logColor1, "Downloading the boilerplate from Github...", logDefault);
-		await executeCommand(`git clone --depth 1 ${git_repo} ${projectPath}`).then((res) => console.log(res));
+		await executeCommand(`git clone --depth 1 ${git_repo} ${projectPath}`);
 
 		process.chdir(projectPath);
 		console.log(logColor1, "Installing dependencies...", logDefault);
