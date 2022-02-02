@@ -96,7 +96,7 @@ const createPackageJSON = (packageJson, projectName) => {
 	console.log("Initializing project..");
 	try {
 		console.log(logColor1, "Downloading the boilerplate from Github...", logDefault);
-		await executeCommand(`git clone --depth 1 ${git_repo}`);
+		await executeCommand(`git clone --depth 1 ${git_repo} ${projectPath}`);
 
 		process.chdir(projectPath);
 		console.log(logColor1, "Installing dependencies...", logDefault);
@@ -104,9 +104,9 @@ const createPackageJSON = (packageJson, projectName) => {
 		console.log();
 
 		await executeCommand("rm -rf ./.git");
-		// fs.unlinkSync(path.join(projectPath, "LICENSE.MD"));
-		// fs.rm(path.join(projectPath, "bin"), { recursive: true });
-		// fs.unlinkSync(path.join(projectPath, "package.json"));
+		fs.unlinkSync(path.join(projectPath, "LICENSE.MD"));
+		fs.rm(path.join(projectPath, "bin"), { recursive: true });
+		fs.unlinkSync(path.join(projectPath, "package.json"));
 
 		console.log(logColor1, "Creating a .gitignore", logDefault);
 		await executeCommand("curl -o .gitignore https://raw.githubusercontent.com/github/gitignore/master/Node.gitignore");
