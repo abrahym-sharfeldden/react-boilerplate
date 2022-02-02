@@ -20,3 +20,9 @@ Now you can use the boilerplate anywhere on your machine with the following comm
 ```npx react-boilerplate projectName```
 or
 ```npx rbp projectName```
+
+## Future Upgrades
+- Switching from react-scripts to webpack
+- Include a boilerplate for tests using Jest
+- Include a reset.css to reduce inconsistencies between browsers
+- Include a css autoprefixer
