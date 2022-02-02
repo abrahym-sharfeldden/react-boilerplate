@@ -59,7 +59,7 @@ const executeCommand = async (command) => {
 	}
 };
 
-const createPackageJSON = (packageJson, projectName) => {
+const createPackageJSON = async (packageJson, projectName) => {
 	const { bin, keywords, license, homepage, repository, bugs, ...newPackage } = packageJson;
 
 	Object.assign(newPackage, {
@@ -86,7 +86,7 @@ const createPackageJSON = (packageJson, projectName) => {
 		},
 	});
 
-	fs.writeFile(`${process.cwd()}/package.json`, JSON.stringify(newPackage, null, 2));
+	fs.writeFileSync(`${process.cwd()}/package.json`, JSON.stringify(newPackage, null, 2));
 };
 
 (async () => {
@@ -108,14 +108,16 @@ const createPackageJSON = (packageJson, projectName) => {
 
 		await executeCommand("rm -rf ./.git");
 		fs.unlinkSync(path.join(projectPath, "LICENSE.MD"));
-		fs.rm(path.join(projectPath, "bin"), { recursive: true });
+		fs.rm(path.join(projectPath, "bin"), { recursive: true }, (err) => {
+			if (err) {
+				console.error(err.message);
+				return;
+			}
+		});
 		fs.unlinkSync(path.join(projectPath, "package.json"));
 
-		console.log(logColor1, "Creating a .gitignore", logDefault);
-		await executeCommand("curl -o .gitignore https://raw.githubusercontent.com/github/gitignore/master/Node.gitignore");
-
 		console.log(logColor1, "Building package.json", logDefault);
-		createPackageJSON(packageJson, projectName);
+		await createPackageJSON(packageJson, projectName);
 
 		console.log("\x1b[32m", "The installation is done, this is ready to use !", "\x1b[0m");
 		console.log();
@@ -125,10 +127,16 @@ const createPackageJSON = (packageJson, projectName) => {
 		console.log("\tnpm start", "\x1b[0m");
 		console.log();
 		console.log("Check Readme.md for more informations");
-		console.log();
 	} catch (error) {
 		console.log(error);
-		fs.rm(projectPath, { recursive: true });
+		fs.rm(projectPath, { recursive: true }, (err) => {
+			if (err) {
+				console.error(err.message);
+				return;
+			}
+
+			console.log("File deleted successfully");
+		});
 	}
 })();
 
