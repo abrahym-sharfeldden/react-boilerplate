@@ -36,7 +36,9 @@ npx rbp <projectName>
 
 ## Future Upgrades
 
--   Switching from react-scripts to webpack
--   Include a boilerplate for tests using Jest
+-   Switching from react-scripts to a manually configured webpack config
+-   Include a boilerplate for tests using Jest or other testing frameworks
 -   Include a reset.css to reduce inconsistencies between browsers
 -   Include a css autoprefixer
+-   Automatically generating a travis.yml file for CI/CD
+-   Including a .prettierignore file to not include .yml files
