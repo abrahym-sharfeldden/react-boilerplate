@@ -38,7 +38,8 @@ npx rbp <projectName>
 
 -   Switching from react-scripts to a manually configured webpack config
 -   Include a boilerplate for tests using Jest or other testing frameworks
--   Include a reset.css to reduce inconsistencies between browsers
 -   Include a css autoprefixer
--   Automatically generating a travis.yml file for CI/CD
--   Including a .prettierignore file to not include .yml files
+-   Generate a reset.css && normalize.css
+-   Configure css auto-prefixer
+-   Generating a travis.yml file for CI/CD
+-   Generate a .prettierignore file 
