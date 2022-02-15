@@ -43,3 +43,4 @@ npx rbp <projectName>
 -   Configure css auto-prefixer
 -   Generating a travis.yml file for CI/CD
 -   Generate a .prettierignore file 
+-   Create a auto-generated README
