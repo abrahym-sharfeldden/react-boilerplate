@@ -1,6 +1,6 @@
 # React Boilerplate
 
-This is a simple and lightweight boilerplate for react to learn the ins and outs of npm packages, Webpack (future addition) and, node modules such as `child_processes.exec()` and such and truly understanding the beauty of create-react-app.
+This is a simple and lightweight boilerplate for react to learn the ins and outs of npm, Webpack (future addition) and, node modules such as `child_processes.exec()` and such and truly understanding the beauty of create-react-app.
 
 ## Features
 
