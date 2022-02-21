@@ -33,14 +33,3 @@ or
 ```bash
 npx rbp <projectName>
 ```
-
-## Future Upgrades
-
--   Switching from react-scripts to a manually configured webpack config
--   Include a boilerplate for tests using Jest or other testing frameworks
--   Include a css autoprefixer
--   Generate a reset.css && normalize.css
--   Configure css auto-prefixer
--   Generating a travis.yml file for CI/CD
--   Generate a .prettierignore file 
--   Create a auto-generated README
